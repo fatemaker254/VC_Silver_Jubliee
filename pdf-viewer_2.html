@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>eSouvenir
+
+OBSERVANCE OF
+PLATINUM JUBILEE CELEBRATION</title>
+
+<style>
+
+:root {
+    --bg-start: #ffd9a0;
+    --bg-mid: #ffb066;
+    --bg-end: #ff8c5a;
+
+    --panel: #fff6ea;
+
+    --accent: #ff7a3d;
+    --accent-dark: #e8632a;
+
+    --text: #3a2a1e;
+    --muted: #8a6a52;
+}
+
+
+/* =====================================================
+   GLOBAL
+===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+}
+
+body {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--bg-start) 0%,
+            var(--bg-mid) 50%,
+            var(--bg-end) 100%
+        );
+
+    color: var(--text);
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: flex-start;
+
+    min-height: 100vh;
+
+    padding:
+        12px
+        12px
+        8px;
+}
+
+
+/* =====================================================
+   TITLE
+===================================================== */
+
+h1 {
+
+    flex: 0 0 auto;
+
+    font-size: 1.2rem;
+
+    font-weight: 600;
+
+    letter-spacing: .2px;
+
+    margin:
+        0
+        0
+        10px;
+
+    color: var(--text);
+}
+
+
+/* =====================================================
+   PDF STAGE
+===================================================== */
+
+#stage {
+
+    position: relative;
+
+    /*
+       Initial values.
+       JavaScript automatically changes
+       these according to the PDF dimensions
+       and available screen size.
+    */
+
+    width: 800px;
+    height: 600px;
+
+    max-width: 96vw;
+    max-height: calc(100vh - 125px);
+
+    background: #ffffff;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 10px 40px
+        rgba(120, 60, 20, .35);
+
+    overflow: hidden;
+
+    perspective: 2200px;
+
+    flex: 0 0 auto;
+}
+
+
+/* =====================================================
+   PLACEHOLDER
+===================================================== */
+
+#placeholder {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    padding: 60px 20px;
+
+    color: var(--muted);
+
+    text-align: center;
+
+    font-size: .9rem;
+}
+
+
+/* =====================================================
+   PAGE LAYERS
+===================================================== */
+
+.pageLayer {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    backface-visibility: hidden;
+
+    transform-style: preserve-3d;
+}
+
+
+#pageBack {
+
+    z-index: 1;
+}
+
+
+#pageFront {
+
+    z-index: 2;
+
+    transition:
+        transform .65s
+        cubic-bezier(.4, .1, .2, 1);
+
+    transform:
+        rotateY(0deg);
+}
+
+
+/* =====================================================
+   PDF CANVAS
+===================================================== */
+
+.pageLayer canvas {
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    background: #ffffff;
+
+    object-fit: fill;
+}
+
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.pageLogo {
+
+    position: absolute;
+
+    /*
+       Distance from the top-right
+       corner of the PDF page.
+    */
+
+    top: 18px;
+    right: 18px;
+
+    /*
+       Change this value if you want
+       the logo larger or smaller.
+    */
+
+    width: 75px;
+
+    height: auto;
+
+    object-fit: contain;
+
+    z-index: 10;
+
+    /*
+       The logo should not interfere
+       with page clicking/animation.
+    */
+
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   CONTROLS
+===================================================== */
+
+#controls {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 22px;
+
+    margin-top: 10px;
+
+    flex: 0 0 auto;
+}
+
+
+.navBtn {
+
+    background: var(--panel);
+
+    border:
+        1px solid
+        rgba(120, 60, 20, .15);
+
+    color: var(--accent-dark);
+
+    width: 48px;
+    height: 48px;
+
+    border-radius: 50%;
+
+    font-size: 1.1rem;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    transition:
+        background .15s ease,
+        transform .1s ease,
+        color .15s ease;
+
+    box-shadow:
+        0 3px 10px
+        rgba(120, 60, 20, .15);
+}
+
+
+.navBtn:hover:not(:disabled) {
+
+    background: var(--accent);
+
+    color: #ffffff;
+}
+
+
+.navBtn:active:not(:disabled) {
+
+    transform: scale(.92);
+}
+
+
+.navBtn:disabled {
+
+    opacity: .35;
+
+    cursor: not-allowed;
+}
+
+
+/* =====================================================
+   PAGE INFORMATION
+===================================================== */
+
+#pageInfo {
+
+    font-size: .9rem;
+
+    color: var(--muted);
+
+    min-width: 105px;
+
+    text-align: center;
+}
+
+
+/* =====================================================
+   LOADING OVERLAY
+===================================================== */
+
+#loadingOverlay {
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        rgba(255, 246, 234, .75);
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    z-index: 20;
+
+    font-size: .85rem;
+
+    color: var(--muted);
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+
+    margin-top: 8px;
+
+    font-size: .7rem;
+
+    color: var(--muted);
+
+    text-align: center;
+
+    flex: 0 0 auto;
+}
+
+
+/* =====================================================
+   SMALL SCREEN
+===================================================== */
+
+@media (max-width: 600px) {
+
+    body {
+
+        padding:
+            8px
+            6px
+            5px;
+    }
+
+    h1 {
+
+        font-size: 1rem;
+
+        margin-bottom: 7px;
+    }
+
+    #controls {
+
+        margin-top: 7px;
+
+        gap: 14px;
+    }
+
+    .navBtn {
+
+        width: 42px;
+        height: 42px;
+
+        font-size: 1rem;
+    }
+
+    #pageInfo {
+
+        min-width: 90px;
+
+        font-size: .82rem;
+    }
+
+    footer {
+
+        display: none;
+    }
+
+    /*
+       Smaller logo on phones.
+    */
+
+    .pageLogo {
+
+        top: 10px;
+        right: 10px;
+
+        width: 55px;
+    }
+}
+/* =====================================================
+   WEBSITE LOGO - TOP RIGHT CORNER
+===================================================== */
+
+.websiteLogo {
+    position: fixed;
+
+    top: 20px;
+    right: 25px;
+
+    width: 90px;
+    height: auto;
+
+    object-fit: contain;
+
+    z-index: 1000;
+}
+
+/* Smaller logo on mobile */
+@media (max-width: 600px) {
+    .websiteLogo {
+        top: 10px;
+        right: 10px;
+        width: 55px;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+<img src="logo.png" alt="Logo" class="websiteLogo">
+
+<h1>eSouvenir
+
+OBSERVANCE OF
+PLATINUM JUBILEE CELEBRATION</h1>
+
+
+<div id="stage">
+
+    <div id="placeholder">
+
+        <span>Loading document…</span>
+
+    </div>
+
+    <div id="loadingOverlay">
+
+        Loading…
+
+    </div>
+
+</div>
+
+
+<div
+    id="controls"
+    style="display:none;"
+>
+
+    <button
+        class="navBtn"
+        id="prevBtn"
+        title="Previous page"
+    >
+        &#8592;
+    </button>
+
+    <span id="pageInfo">
+
+        Page 1 / 1
+
+    </span>
+
+    <button
+        class="navBtn"
+        id="nextBtn"
+        title="Next page"
+    >
+        &#8594;
+    </button>
+
+</div>
+
+
+<footer>
+
+    Use the ← / → arrow keys,
+    or the buttons above, to flip pages.
+
+</footer>
+
+
+<!-- =====================================================
+     PDF.JS
+===================================================== -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+
+<script>
+
+(function () {
+
+
+/* =====================================================
+   PDF.JS CONFIGURATION
+===================================================== */
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+
+/* =====================================================
+   PDF FILE
+===================================================== */
+
+const PDF_URL = "document.pdf";
+
+
+/* =====================================================
+   LOGO FILE
+===================================================== */
+
+const LOGO_URL = "";
+
+
+/* =====================================================
+   DOM ELEMENTS
+===================================================== */
+
+const stage =
+    document.getElementById("stage");
+
+const controls =
+    document.getElementById("controls");
+
+const prevBtn =
+    document.getElementById("prevBtn");
+
+const nextBtn =
+    document.getElementById("nextBtn");
+
+const pageInfo =
+    document.getElementById("pageInfo");
+
+
+/* =====================================================
+   STATE
+===================================================== */
+
+let pdfDoc = null;
+
+let currentPage = 1;
+
+let totalPages = 1;
+
+let isFlipping = false;
+
+
+/*
+   Rendering quality.
+
+   2 = good
+   2.5 = very good
+   3 = extremely sharp
+*/
+
+const renderScale = 2;
+
+
+/* =====================================================
+   PAGE LAYERS
+===================================================== */
+
+let backLayer = null;
+
+let frontLayer = null;
+
+let backCanvas = null;
+
+let frontCanvas = null;
+
+
+/* =====================================================
+   BUILD PAGE LAYERS
+===================================================== */
+
+function buildLayers() {
+
+    stage.innerHTML = "";
+
+
+    /* -------------------------------------------------
+       BACK PAGE
+    ------------------------------------------------- */
+
+    backLayer =
+        document.createElement("div");
+
+    backLayer.id =
+        "pageBack";
+
+    backLayer.className =
+        "pageLayer";
+
+
+    backCanvas =
+        document.createElement("canvas");
+
+
+    backLayer.appendChild(
+        backCanvas
+    );
+
+
+    /*
+       BACK PAGE LOGO
+    */
+
+    const backLogo =
+        document.createElement("img");
+
+
+    backLogo.src =
+        LOGO_URL;
+
+
+    backLogo.className =
+        "pageLogo";
+
+
+    backLogo.alt =
+        "";
+
+
+    backLayer.appendChild(
+        backLogo
+    );
+
+
+    /* -------------------------------------------------
+       FRONT PAGE
+    ------------------------------------------------- */
+
+    frontLayer =
+        document.createElement("div");
+
+    frontLayer.id =
+        "pageFront";
+
+    frontLayer.className =
+        "pageLayer";
+
+
+    frontCanvas =
+        document.createElement("canvas");
+
+
+    frontLayer.appendChild(
+        frontCanvas
+    );
+
+
+    /*
+       FRONT PAGE LOGO
+    */
+
+    const frontLogo =
+        document.createElement("img");
+
+
+    frontLogo.src =
+        LOGO_URL;
+
+
+    frontLogo.className =
+        "pageLogo";
+
+
+    frontLogo.alt =
+        "";
+
+
+    frontLayer.appendChild(
+        frontLogo
+    );
+
+
+    /* -------------------------------------------------
+       ADD LAYERS
+    ------------------------------------------------- */
+
+    stage.appendChild(
+        backLayer
+    );
+
+    stage.appendChild(
+        frontLayer
+    );
+
+
+    /* -------------------------------------------------
+       LOADING OVERLAY
+    ------------------------------------------------- */
+
+    const overlay =
+        document.createElement("div");
+
+
+    overlay.id =
+        "loadingOverlay";
+
+
+    overlay.textContent =
+        "Loading…";
+
+
+    stage.appendChild(
+        overlay
+    );
+}
+
+
+/* =====================================================
+   LOADING CONTROL
+===================================================== */
+
+function setLoading(on) {
+
+    const overlay =
+        document.getElementById(
+            "loadingOverlay"
+        );
+
+
+    if (overlay) {
+
+        overlay.style.display =
+            on
+                ? "flex"
+                : "none";
+    }
+}
+
+
+/* =====================================================
+   CALCULATE VIEWER SIZE
+
+   Fits the entire PDF page into
+   the available browser screen.
+===================================================== */
+
+function calculateViewerSize(
+    pageRatio
+) {
+
+    /*
+       Current browser dimensions.
+    */
+
+    const viewportWidth =
+        window.innerWidth;
+
+    const viewportHeight =
+        window.innerHeight;
+
+
+    /*
+       Space reserved for:
+
+       - title
+       - navigation
+       - margins
+       - footer
+    */
+
+    const reservedHeight =
+        window.innerWidth <= 600
+            ? 75
+            : 115;
+
+
+    /*
+       Maximum height available
+       for the PDF.
+    */
+
+    const maxHeight =
+        Math.max(
+            250,
+            viewportHeight -
+            reservedHeight
+        );
+
+
+    /*
+       Maximum width available.
+    */
+
+    const maxWidth =
+        Math.min(
+            viewportWidth * 0.96,
+            900
+        );
+
+
+    /*
+       Width that the PDF would have
+       if its height used all available
+       vertical space.
+    */
+
+    const widthFromHeight =
+        maxHeight / pageRatio;
+
+
+    /*
+       Choose the smaller dimension.
+
+       This guarantees the entire
+       PDF page remains visible.
+    */
+
+    const finalWidth =
+        Math.min(
+            maxWidth,
+            widthFromHeight
+        );
+
+
+    const finalHeight =
+        finalWidth * pageRatio;
+
+
+    /*
+       Apply dimensions.
+    */
+
+    stage.style.width =
+        finalWidth + "px";
+
+
+    stage.style.height =
+        finalHeight + "px";
+
+
+    return {
+
+        width:
+            finalWidth,
+
+        height:
+            finalHeight
+    };
+}
+
+
+/* =====================================================
+   RENDER PDF PAGE
+===================================================== */
+
+async function renderPageToCanvas(
+    pageNum,
+    canvas
+) {
+
+    const page =
+        await pdfDoc.getPage(
+            pageNum
+        );
+
+
+    /*
+       Get the ORIGINAL PDF dimensions.
+    */
+
+    const baseViewport =
+        page.getViewport({
+            scale: 1
+        });
+
+
+    const pdfWidth =
+        baseViewport.width;
+
+
+    const pdfHeight =
+        baseViewport.height;
+
+
+    /*
+       Preserve original PDF
+       aspect ratio.
+    */
+
+    const pageRatio =
+        pdfHeight /
+        pdfWidth;
+
+
+    /*
+       Calculate the largest size
+       that fits the screen.
+    */
+
+    const size =
+        calculateViewerSize(
+            pageRatio
+        );
+
+
+    /*
+       Calculate display scale.
+    */
+
+    const cssScale =
+        size.width /
+        pdfWidth;
+
+
+    /*
+       Render at higher resolution
+       for sharper text.
+    */
+
+    const viewport =
+        page.getViewport({
+
+            scale:
+                cssScale *
+                renderScale
+
+        });
+
+
+    /*
+       Internal canvas resolution.
+    */
+
+    canvas.width =
+        Math.ceil(
+            viewport.width
+        );
+
+
+    canvas.height =
+        Math.ceil(
+            viewport.height
+        );
+
+
+    /*
+       CSS display size.
+    */
+
+    canvas.style.width =
+        "100%";
+
+
+    canvas.style.height =
+        "100%";
+
+
+    /*
+       Canvas context.
+    */
+
+    const ctx =
+        canvas.getContext(
+            "2d",
+            {
+                alpha: false
+            }
+        );
+
+
+    /*
+       Clear old content.
+    */
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    /*
+       Render PDF.
+    */
+
+    await page.render({
+
+        canvasContext:
+            ctx,
+
+        viewport:
+            viewport
+
+    }).promise;
+}
+
+
+/* =====================================================
+   LOAD PDF
+===================================================== */
+
+async function loadPdf(source) {
+
+    buildLayers();
+
+    setLoading(true);
+
+
+    try {
+
+        const loadingTask =
+            pdfjsLib.getDocument(
+                source
+            );
+
+
+        pdfDoc =
+            await loadingTask.promise;
+
+
+        totalPages =
+            pdfDoc.numPages;
+
+
+        currentPage = 1;
+
+
+        /*
+           Render first page.
+        */
+
+        await renderPageToCanvas(
+            currentPage,
+            frontCanvas
+        );
+
+
+        frontLayer.style.transform =
+            "rotateY(0deg)";
+
+
+        /*
+           Show controls.
+        */
+
+        controls.style.display =
+            "flex";
+
+
+        updatePageInfo();
+
+
+    } catch (err) {
+
+        console.error(err);
+
+
+        showError(
+            'Could not load the PDF. Make sure "document.pdf" is next to this HTML file.'
+        );
+
+
+    } finally {
+
+        setLoading(false);
+
+    }
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+function showError(message) {
+
+    stage.innerHTML = "";
+
+
+    const ph =
+        document.createElement(
+            "div"
+        );
+
+
+    ph.id =
+        "placeholder";
+
+
+    ph.innerHTML =
+        `<span>${message}</span>`;
+
+
+    stage.appendChild(
+        ph
+    );
+
+
+    controls.style.display =
+        "none";
+}
+
+
+/* =====================================================
+   PAGE INFORMATION
+===================================================== */
+
+function updatePageInfo() {
+
+    pageInfo.textContent =
+        `Page ${currentPage} / ${totalPages}`;
+
+
+    prevBtn.disabled =
+        currentPage <= 1 ||
+        isFlipping;
+
+
+    nextBtn.disabled =
+        currentPage >= totalPages ||
+        isFlipping;
+}
+
+
+/* =====================================================
+   PAGE FLIP
+===================================================== */
+
+async function flipTo(
+    targetPage,
+    direction
+) {
+
+    if (
+        isFlipping ||
+        targetPage < 1 ||
+        targetPage > totalPages
+    ) {
+
+        return;
+    }
+
+
+    isFlipping = true;
+
+    updatePageInfo();
+
+
+    /*
+       Render destination page
+       into the back layer.
+    */
+
+    await renderPageToCanvas(
+        targetPage,
+        backCanvas
+    );
+
+
+    /*
+       Prepare front page animation.
+    */
+
+    frontLayer.style.transition =
+        "none";
+
+
+    frontLayer.style.transformOrigin =
+        direction === "next"
+            ? "left center"
+            : "right center";
+
+
+    frontLayer.style.transform =
+        "rotateY(0deg)";
+
+
+    /*
+       Force browser reflow.
+    */
+
+    void frontLayer.offsetWidth;
+
+
+    frontLayer.style.transition =
+        "transform .65s cubic-bezier(.4,.1,.2,1)";
+
+
+    const endRotation =
+        direction === "next"
+            ? "-180deg"
+            : "180deg";
+
+
+    requestAnimationFrame(() => {
+
+        frontLayer.style.transform =
+            `rotateY(${endRotation})`;
+
+    });
+
+
+    /*
+       Finish animation.
+    */
+
+    const onEnd =
+        async () => {
+
+            frontLayer.removeEventListener(
+                "transitionend",
+                onEnd
+            );
+
+
+            currentPage =
+                targetPage;
+
+
+            /*
+               Render target page
+               as the new front page.
+            */
+
+            await renderPageToCanvas(
+                currentPage,
+                frontCanvas
+            );
+
+
+            /*
+               Reset rotation.
+            */
+
+            frontLayer.style.transition =
+                "none";
+
+
+            frontLayer.style.transform =
+                "rotateY(0deg)";
+
+
+            void frontLayer.offsetWidth;
+
+
+            frontLayer.style.transition =
+                "transform .65s cubic-bezier(.4,.1,.2,1)";
+
+
+            isFlipping = false;
+
+
+            updatePageInfo();
+        };
+
+
+    frontLayer.addEventListener(
+        "transitionend",
+        onEnd
+    );
+}
+
+
+/* =====================================================
+   NAVIGATION BUTTONS
+===================================================== */
+
+prevBtn.addEventListener(
+    "click",
+    () => {
+
+        flipTo(
+            currentPage - 1,
+            "prev"
+        );
+
+    }
+);
+
+
+nextBtn.addEventListener(
+    "click",
+    () => {
+
+        flipTo(
+            currentPage + 1,
+            "next"
+        );
+
+    }
+);
+
+
+/* =====================================================
+   KEYBOARD NAVIGATION
+===================================================== */
+
+document.addEventListener(
+    "keydown",
+    (e) => {
+
+        if (!pdfDoc)
+            return;
+
+
+        if (
+            e.key === "ArrowRight"
+        ) {
+
+            flipTo(
+                currentPage + 1,
+                "next"
+            );
+
+        }
+
+
+        if (
+            e.key === "ArrowLeft"
+        ) {
+
+            flipTo(
+                currentPage - 1,
+                "prev"
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   RESPONSIVE RESIZE
+===================================================== */
+
+let resizeTimer;
+
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        if (!pdfDoc)
+            return;
+
+
+        clearTimeout(
+            resizeTimer
+        );
+
+
+        resizeTimer =
+            setTimeout(
+                async () => {
+
+                    await renderPageToCanvas(
+                        currentPage,
+                        frontCanvas
+                    );
+
+                },
+                150
+            );
+    }
+);
+
+
+/* =====================================================
+   START VIEWER
+===================================================== */
+
+loadPdf(PDF_URL);
+
+
+})();
+
+</script>
+
+</body>
+
+</html>
